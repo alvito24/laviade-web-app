@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\User\ReviewController;
 use App\Http\Controllers\Api\V1\User\ProfileController;
 use App\Http\Controllers\Api\V1\User\CategoryController;
 use App\Http\Controllers\Api\V1\User\WishlistController;
+use App\Http\Controllers\Api\V1\User\BannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,6 +29,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
+    // Banners (for Flutter home screen slider)
+    Route::get('/banners', [BannerController::class, 'index']);
+
     // Products
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/search', [ProductController::class, 'search']);
@@ -38,6 +42,7 @@ Route::prefix('v1')->group(function () {
 
     // Categories
     Route::get('/categories', [CategoryController::class, 'index']);
+
 
     /*
     |--------------------------------------------------------------------------
