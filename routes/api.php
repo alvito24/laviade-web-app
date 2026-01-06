@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\V1\User\CartController;
 use App\Http\Controllers\Api\V1\User\OrderController;
 use App\Http\Controllers\Api\V1\User\ReviewController;
 use App\Http\Controllers\Api\V1\User\ProfileController;
+use App\Http\Controllers\Api\V1\User\CategoryController;
+use App\Http\Controllers\Api\V1\User\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +34,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/products/new-arrivals', [ProductController::class, 'newArrivals']);
     Route::get('/products/best-sellers', [ProductController::class, 'bestSellers']);
     Route::get('/products/{slug}', [ProductController::class, 'show']);
+    Route::get('/products/{slug}/related', [ProductController::class, 'related']);
+
+    // Categories
+    Route::get('/categories', [CategoryController::class, 'index']);
 
     /*
     |--------------------------------------------------------------------------
@@ -56,6 +62,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/orders/{orderNumber}', [OrderController::class, 'show']);
         Route::post('/checkout', [OrderController::class, 'checkout']);
         Route::post('/orders/{orderNumber}/cancel', [OrderController::class, 'cancel']);
+
+        // Wishlist
+        Route::get('/wishlist', [WishlistController::class, 'index']);
+        Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
+        Route::get('/wishlist/{productId}/check', [WishlistController::class, 'check']);
 
         // Reviews
         Route::post('/reviews', [ReviewController::class, 'store']);

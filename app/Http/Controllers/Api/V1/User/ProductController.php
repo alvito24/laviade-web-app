@@ -76,4 +76,21 @@ class ProductController extends Controller
             'data' => $this->productService->getBestSellers(8),
         ]);
     }
+
+    public function related(string $slug): JsonResponse
+    {
+        $product = $this->productService->getBySlug($slug);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk tidak ditemukan',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->productService->getRelatedProducts($product),
+        ]);
+    }
 }
