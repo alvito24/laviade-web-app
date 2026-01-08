@@ -55,7 +55,7 @@ class ProductController extends Controller
             'colors' => 'nullable',
             'material' => 'nullable|string|max:100',
             'weight' => 'nullable|numeric|min:0',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|max:10000',
         ]);
 
         // Generate Unique Slug
@@ -132,7 +132,7 @@ class ProductController extends Controller
             'colors' => 'nullable',
             'material' => 'nullable|string|max:100',
             'weight' => 'nullable|numeric|min:0',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|max:10000',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');

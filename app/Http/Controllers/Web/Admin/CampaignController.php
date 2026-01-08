@@ -15,6 +15,7 @@ class CampaignController extends Controller
     public function index(): View
     {
         $campaigns = Campaign::with('banners')
+            ->withCount('banners')
             ->latest()
             ->paginate(20);
 
@@ -36,7 +37,7 @@ class CampaignController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'sort_order' => 'integer|min:0',
             'banners' => 'nullable|array',
-            'banners.*.image' => 'required|image|max:4096',
+            'banners.*.image' => 'nullable|image|max:4096',
             'banners.*.title' => 'nullable|string|max:255',
             'banners.*.subtitle' => 'nullable|string|max:500',
             'banners.*.cta_text' => 'nullable|string|max:50',
@@ -83,9 +84,9 @@ class CampaignController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'type' => 'required|in:hero_slider,promotion,collection,flash_sale',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'type' => 'required|in:hero_slider,promotion,collection,flash_sale,banner,sale',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
             'sort_order' => 'integer|min:0',
         ]);
 

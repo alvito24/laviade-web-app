@@ -19,6 +19,8 @@
                             <option value="hero_slider">Hero Slider</option>
                             <option value="banner">Banner</option>
                             <option value="promotion">Promotion</option>
+                            <option value="collection">Collection</option>
+                            <option value="flash_sale">Flash Sale</option>
                             <option value="sale">Sale</option>
                         </select>
                     </div>
@@ -51,14 +53,15 @@
 
             <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                 <h2 class="text-lg font-semibold mb-4">Banner Images</h2>
-                <p class="text-sm text-gray-500 mb-4">Upload banner images for this campaign</p>
+                <p class="text-sm text-gray-500 mb-4">Upload banner images for this campaign (optional - can be added
+                    later from Edit page)</p>
 
                 <div id="banners-container">
                     <div class="banner-item border rounded-lg p-4 mb-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Banner Image *</label>
-                                <input type="file" name="banners[0][image]" accept="image/*" required class="w-full">
+                                <label class="block text-sm font-medium mb-1">Banner Image</label>
+                                <input type="file" name="banners[0][image]" accept="image/*" class="w-full">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Title</label>
@@ -108,8 +111,8 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium mb-1">Banner Image *</label>
-                            <input type="file" name="banners[${bannerIndex}][image]" accept="image/*" required class="w-full">
+                            <label class="block text-sm font-medium mb-1">Banner Image</label>
+                            <input type="file" name="banners[${bannerIndex}][image]" accept="image/*" class="w-full">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Title</label>

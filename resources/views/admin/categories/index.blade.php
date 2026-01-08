@@ -136,7 +136,7 @@
         function editCategory(category) {
             document.getElementById('modal-title').textContent = 'Edit Category';
             document.getElementById('category-form').action = `/admin/categories/${category.id}`;
-            document.getElementById('method-field').innerHTML = '@method("PUT")';
+            document.getElementById('method-field').innerHTML = '<input type="hidden" name="_method" value="PUT">';
             document.getElementById('inp-name').value = category.name;
             document.getElementById('inp-parent_id').value = category.parent_id || '';
             document.getElementById('inp-description').value = category.description || '';

@@ -22,6 +22,10 @@
                             <option value="banner" {{ $campaign->type === 'banner' ? 'selected' : '' }}>Banner</option>
                             <option value="promotion" {{ $campaign->type === 'promotion' ? 'selected' : '' }}>Promotion
                             </option>
+                            <option value="collection" {{ $campaign->type === 'collection' ? 'selected' : '' }}>Collection
+                            </option>
+                            <option value="flash_sale" {{ $campaign->type === 'flash_sale' ? 'selected' : '' }}>Flash Sale
+                            </option>
                             <option value="sale" {{ $campaign->type === 'sale' ? 'selected' : '' }}>Sale</option>
                         </select>
                     </div>
@@ -64,13 +68,8 @@
                                 <img src="{{ $banner->image_url }}" class="w-full aspect-video object-cover rounded-lg">
                                 <div
                                     class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                    <form action="{{ route('admin.campaigns.banners.delete', $banner) }}" method="POST"
-                                        onsubmit="return confirm('Delete?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="text-white text-sm px-3 py-1 bg-red-600 rounded">Delete</button>
-                                    </form>
+                                    <button type="button" onclick="deleteBanner({{ $banner->id }})"
+                                        class="text-white text-sm px-3 py-1 bg-red-600 rounded">Delete</button>
                                 </div>
                                 @if($banner->title)
                                     <div class="mt-1 text-sm truncate">{{ $banner->title }}</div>
@@ -96,41 +95,56 @@
         </form>
     </div>
 
-    <script>
-        let bannerIndex = 0;
-        function addBanner() {
-            const container = document.getElementById('banners-container');
-            const html = `
-                <div class="banner-item border rounded-lg p-4 mb-4">
-                    <div class="flex justify-end mb-2">
-                        <button type="button" onclick="this.closest('.banner-item').remove()" class="text-red-600 text-sm">Remove</button>
+    @push('scripts')
+        <script>
+            let bannerIndex = 0;
+            function addBanner() {
+                const container = document.getElementById('banners-container');
+                const html = `
+                    <div class="banner-item border rounded-lg p-4 mb-4">
+                        <div class="flex justify-end mb-2">
+                            <button type="button" onclick="this.closest('.banner-item').remove()" class="text-red-600 text-sm">Remove</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Banner Image *</label>
+                                <input type="file" name="banners[${bannerIndex}][image]" accept="image/*" required class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Title</label>
+                                <input type="text" name="banners[${bannerIndex}][title]" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Subtitle</label>
+                                <input type="text" name="banners[${bannerIndex}][subtitle]" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">CTA Link</label>
+                                <input type="text" name="banners[${bannerIndex}][cta_link]" placeholder="/shop" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">CTA Text</label>
+                                <input type="text" name="banners[${bannerIndex}][cta_text]" placeholder="Shop Now" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Banner Image *</label>
-                            <input type="file" name="banners[${bannerIndex}][image]" accept="image/*" required class="w-full">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Title</label>
-                            <input type="text" name="banners[${bannerIndex}][title]" class="w-full px-3 py-2 border rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Subtitle</label>
-                            <input type="text" name="banners[${bannerIndex}][subtitle]" class="w-full px-3 py-2 border rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">CTA Link</label>
-                            <input type="text" name="banners[${bannerIndex}][cta_link]" placeholder="/shop" class="w-full px-3 py-2 border rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">CTA Text</label>
-                            <input type="text" name="banners[${bannerIndex}][cta_text]" placeholder="Shop Now" class="w-full px-3 py-2 border rounded-lg">
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-            bannerIndex++;
-        }
-    </script>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+                bannerIndex++;
+            }
+
+            function deleteBanner(bannerId) {
+                if (!confirm('Delete this banner?')) return;
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/campaigns/banners/${bannerId}`;
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    @endpush
 </x-layouts.admin>

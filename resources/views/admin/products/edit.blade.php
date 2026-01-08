@@ -73,19 +73,11 @@
                             <div
                                 class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                                 @if(!$image->is_primary)
-                                    <form action="{{ route('admin.products.image.primary', $image) }}" method="POST">
-                                        @csrf
-                                        <button type="submit"
-                                            class="text-white text-xs px-2 py-1 bg-blue-600 rounded">Primary</button>
-                                    </form>
+                                    <button type="button" onclick="setImagePrimary({{ $image->id }})"
+                                        class="text-white text-xs px-2 py-1 bg-blue-600 rounded">Primary</button>
                                 @endif
-                                <form action="{{ route('admin.products.image.delete', $image) }}" method="POST"
-                                    onsubmit="return confirm('Delete?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="text-white text-xs px-2 py-1 bg-red-600 rounded">Delete</button>
-                                </form>
+                                <button type="button" onclick="deleteImage({{ $image->id }})"
+                                    class="text-white text-xs px-2 py-1 bg-red-600 rounded">Delete</button>
                             </div>
                             @if($image->is_primary)
                                 <span class="absolute top-1 left-1 text-xs bg-black text-white px-1 rounded">Primary</span>
@@ -165,4 +157,30 @@
             </div>
         </form>
     </div>
+
+    @push('scripts')
+        <script>
+            function setImagePrimary(imageId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/products/image/${imageId}/primary`;
+                form.innerHTML = `<input type="hidden" name="_token" value="{{ csrf_token() }}">`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+
+            function deleteImage(imageId) {
+                if (!confirm('Delete this image?')) return;
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/products/image/${imageId}`;
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    @endpush
 </x-layouts.admin>

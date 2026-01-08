@@ -70,7 +70,8 @@
                                         @if($item->product_color) | {{ $item->product_color }} @endif
                                     </div>
                                     <div class="text-sm mt-1">{{ $item->quantity }} x Rp
-                                        {{ number_format($item->price, 0, ',', '.') }}</div>
+                                        {{ number_format($item->price, 0, ',', '.') }}
+                                    </div>
                                 </div>
                                 <div class="font-semibold">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</div>
                             </div>
@@ -157,45 +158,47 @@
                     <div class="bg-surface rounded-lg p-6 mt-6" id="review">
                         <h3 class="font-semibold mb-4">Write a Review</h3>
                         @foreach($order->items as $item)
-                            @php $existingReview = $item->product->reviews->where('user_id', auth()->id())->first(); @endphp
-                            @if(!$existingReview)
-                                <form action="/api/v1/reviews" method="POST" class="mb-4 pb-4 border-b border-custom last:border-0">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $item->product_id }}">
-                                    <input type="hidden" name="order_id" value="{{ $order->id }}">
+                            @if($item->product)
+                                @php $existingReview = $item->product->reviews->where('user_id', auth()->id())->first(); @endphp
+                                @if(!$existingReview)
+                                    <form action="/api/v1/reviews" method="POST" class="mb-4 pb-4 border-b border-custom last:border-0">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $item->product_id }}">
+                                        <input type="hidden" name="order_id" value="{{ $order->id }}">
 
-                                    <div class="flex gap-4 mb-4">
-                                        <img src="{{ $item->product_image_url }}" class="w-16 h-16 object-cover rounded">
-                                        <div>
-                                            <div class="font-medium">{{ $item->product_name }}</div>
-                                            <div class="flex gap-1 mt-2">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    <button type="button" onclick="setRating(this, {{ $i }})"
-                                                        class="rating-star text-2xl text-gray-300 hover:text-yellow-500">★</button>
-                                                @endfor
+                                        <div class="flex gap-4 mb-4">
+                                            <img src="{{ $item->product_image_url }}" class="w-16 h-16 object-cover rounded">
+                                            <div>
+                                                <div class="font-medium">{{ $item->product_name }}</div>
+                                                <div class="flex gap-1 mt-2">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <button type="button" onclick="setRating(this, {{ $i }})"
+                                                            class="rating-star text-2xl text-gray-300 hover:text-yellow-500">★</button>
+                                                    @endfor
+                                                </div>
+                                                <input type="hidden" name="rating" class="rating-input" value="5">
                                             </div>
-                                            <input type="hidden" name="rating" class="rating-input" value="5">
+                                        </div>
+                                        <textarea name="comment" rows="2" placeholder="Share your experience with this product..."
+                                            class="w-full px-3 py-2 bg-white border border-custom rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"></textarea>
+                                        <button type="submit" class="btn-primary mt-2 text-sm py-2 px-4 rounded">Submit Review</button>
+                                    </form>
+                                @else
+                                    <div class="mb-4 pb-4 border-b border-custom last:border-0">
+                                        <div class="flex gap-4">
+                                            <img src="{{ $item->product_image_url }}" class="w-16 h-16 object-cover rounded">
+                                            <div>
+                                                <div class="font-medium">{{ $item->product_name }}</div>
+                                                <div class="flex text-yellow-500 mt-1">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <span>{{ $i <= $existingReview->rating ? '★' : '☆' }}</span>
+                                                    @endfor
+                                                </div>
+                                                <p class="text-secondary text-sm mt-1">{{ $existingReview->comment }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <textarea name="comment" rows="2" placeholder="Share your experience with this product..."
-                                        class="w-full px-3 py-2 bg-white border border-custom rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"></textarea>
-                                    <button type="submit" class="btn-primary mt-2 text-sm py-2 px-4 rounded">Submit Review</button>
-                                </form>
-                            @else
-                                <div class="mb-4 pb-4 border-b border-custom last:border-0">
-                                    <div class="flex gap-4">
-                                        <img src="{{ $item->product_image_url }}" class="w-16 h-16 object-cover rounded">
-                                        <div>
-                                            <div class="font-medium">{{ $item->product_name }}</div>
-                                            <div class="flex text-yellow-500 mt-1">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    <span>{{ $i <= $existingReview->rating ? '★' : '☆' }}</span>
-                                                @endfor
-                                            </div>
-                                            <p class="text-secondary text-sm mt-1">{{ $existingReview->comment }}</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endif
                             @endif
                         @endforeach
                     </div>

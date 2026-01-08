@@ -10,33 +10,56 @@
                     @if($wishlists->count() > 0)
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             @foreach($wishlists as $wishlist)
-                                <div class="bg-white rounded-lg overflow-hidden relative group">
-                                    <a href="{{ route('shop.show', $wishlist->product->slug) }}" class="block">
-                                        <div class="aspect-square overflow-hidden">
-                                            <img src="{{ $wishlist->product->primary_image_url }}"
-                                                alt="{{ $wishlist->product->name }}"
-                                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                @if($wishlist->product)
+                                    <div class="bg-white rounded-lg overflow-hidden relative group">
+                                        <a href="{{ route('shop.show', $wishlist->product->slug) }}" class="block">
+                                            <div class="aspect-square overflow-hidden">
+                                                <img src="{{ $wishlist->product->primary_image_url }}"
+                                                    alt="{{ $wishlist->product->name }}"
+                                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                            </div>
+                                            <div class="p-4">
+                                                <h3 class="font-medium text-sm truncate">{{ $wishlist->product->name }}</h3>
+                                                <div class="mt-2 flex items-center space-x-2">
+                                                    <span
+                                                        class="font-semibold">{{ $wishlist->product->formatted_current_price }}</span>
+                                                    @if($wishlist->product->hasDiscount())
+                                                        <span
+                                                            class="text-secondary text-sm line-through">{{ $wishlist->product->formatted_price }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <button onclick="removeFromWishlist({{ $wishlist->product_id }})"
+                                            class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-red-50 transition">
+                                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                @else
+                                    {{-- Product has been deleted, show placeholder or auto-remove --}}
+                                    <div class="bg-white rounded-lg overflow-hidden relative group opacity-60">
+                                        <div class="aspect-square overflow-hidden bg-gray-100 flex items-center justify-center">
+                                            <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
                                         </div>
                                         <div class="p-4">
-                                            <h3 class="font-medium text-sm truncate">{{ $wishlist->product->name }}</h3>
-                                            <div class="mt-2 flex items-center space-x-2">
-                                                <span
-                                                    class="font-semibold">{{ $wishlist->product->formatted_current_price }}</span>
-                                                @if($wishlist->product->hasDiscount())
-                                                    <span
-                                                        class="text-secondary text-sm line-through">{{ $wishlist->product->formatted_price }}</span>
-                                                @endif
-                                            </div>
+                                            <h3 class="font-medium text-sm truncate text-gray-400">Product no longer available</h3>
                                         </div>
-                                    </a>
-                                    <button onclick="removeFromWishlist({{ $wishlist->product_id }})"
-                                        class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-red-50 transition">
-                                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                        <button onclick="removeFromWishlist({{ $wishlist->product_id }})"
+                                            class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-red-50 transition">
+                                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                     @else

@@ -49,8 +49,14 @@ class Campaign extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now());
+            ->where(function ($q) {
+                $q->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
+            });
     }
 
     public function scopeHeroSlider($query)
@@ -60,8 +66,12 @@ class Campaign extends Model
 
     public function isRunning(): bool
     {
-        return $this->is_active
-            && $this->start_date <= now()
-            && $this->end_date >= now();
+        if (!$this->is_active)
+            return false;
+
+        $startOk = is_null($this->start_date) || $this->start_date <= now();
+        $endOk = is_null($this->end_date) || $this->end_date >= now();
+
+        return $startOk && $endOk;
     }
 }
