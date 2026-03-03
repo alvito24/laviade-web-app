@@ -13,6 +13,14 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $appends = [
+        'primary_image_url',
+        'formatted_price',
+        'formatted_sale_price',
+        'current_price',
+        'discount_percent',
+    ];
+
     protected $fillable = [
         'category_id',
         'name',

@@ -10,6 +10,8 @@ class CampaignBanner extends Model
 {
     use HasFactory;
 
+    protected $appends = ['image_url', 'mobile_image_url'];
+
     protected $fillable = [
         'campaign_id',
         'title',

@@ -47,11 +47,13 @@
                             <div class="flex gap-2">
                                 <a href="{{ route('admin.campaigns.edit', $campaign) }}"
                                     class="text-blue-600 hover:underline">Edit</a>
-                                <form action="{{ route('admin.campaigns.destroy', $campaign) }}" method="POST"
-                                    onsubmit="return confirm('Delete this campaign?')">
+                                
+                                <form action="{{ route('admin.campaigns.destroy', $campaign->id) }}" method="POST" 
+                                    onsubmit="return confirm('Are you sure you want to delete this campaign?');" 
+                                    class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                                    <button type="submit" class="text-red-600 hover:underline bg-transparent border-0 p-0 cursor-pointer">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -64,4 +66,22 @@
             </tbody>
         </table>
     </div>
+
+    @push('scripts')
+        <script>
+            function deleteCampaign(id) {
+                if (!confirm('Delete this campaign?')) return;
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/admin/campaigns/' + id;
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    @endpush
 </x-layouts.admin>

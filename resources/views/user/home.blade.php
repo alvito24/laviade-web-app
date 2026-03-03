@@ -5,7 +5,7 @@
             @forelse($banners as $index => $banner)
                 <div class="hero-slide {{ $index === 0 ? '' : 'hidden' }}" data-index="{{ $index }}">
                     <div class="relative h-[70vh] min-h-[500px] bg-cover bg-center"
-                        style="background-image: url('{{ $banner->image_url }}')">
+                        style="background-image: url('{{ asset('storage/' . $banner->image) }}')">
                         <div class="absolute inset-0 bg-black bg-opacity-30"></div>
                         <div class="absolute inset-0 flex items-center justify-center">
                             <div class="text-center text-white px-4">
