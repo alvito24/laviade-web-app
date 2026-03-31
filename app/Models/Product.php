@@ -142,7 +142,7 @@ class Product extends Model
 
     public function scopePriceRange($query, $min, $max)
     {
-        return $query->whereBetween('price', [$min, $max]);
+        return $query->whereRaw('COALESCE(NULLIF(sale_price, 0), price) BETWEEN ? AND ?', [$min, $max]);
     }
 
     public function scopeSearch($query, $keyword)

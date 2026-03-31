@@ -29,18 +29,29 @@
             <h2 class="text-lg font-semibold mb-4 md:mb-0">Sales Analytics</h2>
             
             <form method="GET" class="flex gap-4">
-                <select name="month" class="px-4 py-2 border rounded-lg focus:outline-none" onchange="this.form.submit()">
-                    @for($m=1; $m<=12; $m++)
-                        <option value="{{ $m }}" {{ $m == $month ? 'selected' : '' }}>
-                            {{ date('F', mktime(0, 0, 0, $m, 1)) }}
-                        </option>
-                    @endfor
+                <select name="filter_mode" class="px-4 py-2 border rounded-lg focus:outline-none" onchange="this.form.submit()">
+                    <option value="month" {{ $filterMode === 'month' ? 'selected' : '' }}>By Month</option>
+                    <option value="year" {{ $filterMode === 'year' ? 'selected' : '' }}>By Year</option>
+                    <option value="all" {{ $filterMode === 'all' ? 'selected' : '' }}>All Time</option>
                 </select>
-                <select name="year" class="px-4 py-2 border rounded-lg focus:outline-none" onchange="this.form.submit()">
-                    @foreach($availableYears as $y)
-                        <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
-                    @endforeach
-                </select>
+
+                @if($filterMode === 'month')
+                    <select name="month" class="px-4 py-2 border rounded-lg focus:outline-none" onchange="this.form.submit()">
+                        @for($m=1; $m<=12; $m++)
+                            <option value="{{ $m }}" {{ $m == $month ? 'selected' : '' }}>
+                                {{ date('F', mktime(0, 0, 0, $m, 1)) }}
+                            </option>
+                        @endfor
+                    </select>
+                @endif
+                
+                @if(in_array($filterMode, ['month', 'year']))
+                    <select name="year" class="px-4 py-2 border rounded-lg focus:outline-none" onchange="this.form.submit()">
+                        @foreach($availableYears as $y)
+                            <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
+                        @endforeach
+                    </select>
+                @endif
             </form>
         </div>
         
@@ -131,14 +142,6 @@
                     yAxisID: 'y',
                     tension: 0.4,
                     fill: true
-                }, {
-                    label: 'Orders',
-                    data: @json($chartData['orders']),
-                    borderColor: '#9ca3af',
-                    backgroundColor: 'transparent',
-                    borderDash: [5, 5],
-                    yAxisID: 'y1',
-                    tension: 0.4
                 }]
             },
             options: {
@@ -156,15 +159,6 @@
                         beginAtZero: true,
                         grid: {
                             color: '#e5e5e5'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        beginAtZero: true,
-                        grid: {
-                            drawOnChartArea: false,
                         }
                     },
                     x: {
